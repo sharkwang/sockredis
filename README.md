@@ -17,19 +17,17 @@ export LISTENPORT=3000
 
 ```
 
-启动sockredis broker
+### 启动sockredis broker
 
 ```
 $ npm install
+$ . ./setenv.sh
 $ npm .
 ```
 
-## 快速启动
+## 客户端示例
 
-```sh
-$ . ./setenv.sh
-$ npm start
-```
+./example目录中是测试网页的实现，参照该例子，可以迅速接入客户端。
 
 打开浏览器访问 `http://localhost:3000`打开测试页面，在页面底部输入框中输入需要订阅的redis channel名字，将收到redis channel中的消息并展示在上部页面中。输入“none”命令，则停止接收所有消息。
 
