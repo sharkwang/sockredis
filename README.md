@@ -35,8 +35,22 @@ docker-compose up -d
 
 ./example目录中是测试网页的实现，参照该例子，可以迅速接入客户端。
 
-打开浏览器访问 `http://localhost:3000`打开测试页面，在页面底部输入框中输入需要订阅的redis channel名字，将收到redis channel中的消息并展示在上部页面中。输入“none”命令，则停止接收所有消息。
+## 测试
+
+1. 启动sockredis
+2. 打开浏览器访问 `http://localhost:3000`打开测试页面，在页面底部输入框中输入订阅的通道“test”
+3. 执行测试客户端,向test通道中发布消息”Hello Sockredis！“
+
+    ```sh
+     /pub2test.sh
+    ```
+
+4. 上部页面中开始以每秒4次的速度显示 “Hello Sockredis!"
+![testpage](./images/testpage.png)
+
+5. 输入“none”命令，则停止接收所有消息。
 
 ## 监控
 
 通过互联网，访问 `https://admin.socket.io`, 注册本地服务器 `https://localhost:3000/admin`, 将可以看到服务器状态和客户端连接情况。
+![AdminUI](./images/adminUI.png)
