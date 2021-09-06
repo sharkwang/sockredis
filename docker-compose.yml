@@ -1,0 +1,18 @@
+version: '2.0'
+services:
+  sockredis:
+    image: longwind/sockredis:latest
+    links:
+      - redis
+    expose:
+      - "3000"
+    environment:
+      - LISTENPORT=3000
+      - REDISHOST=redis
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    hostname: redis
+    expose:
+      - "6379"

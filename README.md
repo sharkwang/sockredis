@@ -25,6 +25,12 @@ $ . ./setenv.sh
 $ npm .
 ```
 
+### 通过docker-compose启动
+
+```
+docker-compose up -d
+```
+
 ## 客户端示例
 
 ./example目录中是测试网页的实现，参照该例子，可以迅速接入客户端。
