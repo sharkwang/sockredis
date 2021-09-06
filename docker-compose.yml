@@ -6,6 +6,8 @@ services:
       - redis
     expose:
       - "3000"
+    ports:
+      - "3000:3000"
     environment:
       - LISTENPORT=3000
       - REDISHOST=redis
@@ -16,3 +18,5 @@ services:
     hostname: redis
     expose:
       - "6379"
+    ports:
+      - "6379:6379"
