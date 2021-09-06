@@ -19,15 +19,15 @@ export LISTENPORT=3000
 
 ### 启动sockredis broker
 
-```
-$ npm install
-$ . ./setenv.sh
-$ npm .
+```sh
+npm install
+. ./setenv.sh
+npm .
 ```
 
 ### 通过docker-compose启动
 
-```
+```sh
 docker-compose up -d
 ```
 
