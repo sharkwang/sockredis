@@ -11,6 +11,7 @@ services:
     environment:
       - LISTENPORT=3000
       - REDISHOST=redis
+      - REDISPORT=6379
 
   redis:
     image: redis:alpine
