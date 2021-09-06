@@ -21,6 +21,6 @@ do
         echo "Wrong arguments"
         exit 255
     fi
-     redis-cli PUBLISH test "Hello Sockredis!" > /dev/null # PUBLISH to the channel
+     redis-cli PUBLISH test "Hello Sockredis! :"$RANDOM > /dev/null # PUBLISH to the channel
      sleep 0.25
 done
