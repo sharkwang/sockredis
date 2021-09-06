@@ -2,8 +2,6 @@ version: '2.0'
 services:
   sockredis:
     image: longwind/sockredis:latest
-    links:
-      - redis
     expose:
       - "3000"
     ports:
@@ -12,6 +10,8 @@ services:
       - LISTENPORT=3000
       - REDISHOST=redis
       - REDISPORT=6379
+    depends_on:
+      - redis
 
   redis:
     image: redis:alpine
