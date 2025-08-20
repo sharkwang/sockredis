@@ -1,4 +1,8 @@
 version: '2.0'
+
+volumes:
+  redis-data:
+
 services:
   sockredis:
     image: longwind/sockredis:latest
@@ -6,10 +10,19 @@ services:
       - "3000"
     ports:
       - "3000:3000"
+    restart: unless-stopped
     environment:
       - LISTENPORT=3000
+      - LISTENHOST=0.0.0.0
       - REDISHOST=redis
       - REDISPORT=6379
+      - REDISPASSWORD=
+      - REDISDB=0
+      - REDIS_POOL_SIZE=2
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=$2b$10$heqvAkYMez.Va6Et2uXInOnkCT6/uQj1brkrbyG3LpopDklcq7ZOS
+      - LOG_LEVEL=info
+      - LOG_CONSOLE=true
     depends_on:
       - redis
 
@@ -21,3 +34,7 @@ services:
       - "6379"
     ports:
       - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    restart: unless-stopped
