@@ -1,17 +1,25 @@
-version: '2.0'
+version: '3.8'
 
 volumes:
   redis-data:
+    driver: local
+
+networks:
+  sockredis-network:
+    driver: bridge
 
 services:
   sockredis:
     image: longwind/sockredis:latest
-    expose:
-      - "3000"
+    container_name: sockredis-app
+    hostname: sockredis
     ports:
       - "3000:3000"
+    networks:
+      - sockredis-network
     restart: unless-stopped
     environment:
+      - NODE_ENV=production
       - LISTENPORT=3000
       - LISTENHOST=0.0.0.0
       - REDISHOST=redis
@@ -24,17 +32,65 @@ services:
       - LOG_LEVEL=info
       - LOG_CONSOLE=true
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) }).on('error', () => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   redis:
-    image: redis:alpine
-    container_name: redis
+    image: redis:7-alpine
+    container_name: sockredis-redis
     hostname: redis
-    expose:
-      - "6379"
     ports:
       - "6379:6379"
+    networks:
+      - sockredis-network
     volumes:
       - redis-data:/data
-    command: redis-server --appendonly yes
+      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: [
+      "redis-server",
+      "/usr/local/etc/redis/redis.conf",
+      "--appendonly", "yes",
+      "--appendfsync", "everysec",
+      "--save", "900", "1",
+      "--save", "300", "10",
+      "--save", "60", "10000"
+    ]
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

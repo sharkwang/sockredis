@@ -119,6 +119,25 @@ httpServer.listen(config.server.port, config.server.host, () => {
 //Server routing
 app.use(express.static(path.join(__dirname, 'example')));
 
+// 健康检查端点
+app.get('/health', (req, res) => {
+    // 检查Redis连接状态
+    const redisStatus = redis.status;
+    if (redisStatus === 'ready' || redisStatus === 'connecting') {
+        res.status(200).json({
+            status: 'healthy',
+            redis: redisStatus,
+            timestamp: new Date().toISOString()
+        });
+    } else {
+        res.status(503).json({
+            status: 'unhealthy',
+            redis: redisStatus,
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
 //SockRedis
 // 全局设置一次Redis消息监听器，避免重复添加
 redis.on("message", (channel, message) => {
